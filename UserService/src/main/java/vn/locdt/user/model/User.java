@@ -41,6 +41,9 @@ public class User implements Serializable {
 
 	@Column(name = "password", nullable = false)
 	private String password;
+	
+	@Column
+	private Double balance;
 
 	@Column(name = "created_at")
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)

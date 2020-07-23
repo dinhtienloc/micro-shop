@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
-import vn.locdt.order.components.OrderProducer;
 import vn.locdt.order.model.Order;
+import vn.locdt.order.producer.OrderPublisher;
 import vn.locdt.order.service.OrderService;
 
 @RestController
@@ -24,12 +24,12 @@ import vn.locdt.order.service.OrderService;
 public class OrderController {
 	private static final Logger log = LoggerFactory.getLogger(OrderController.class);
 
-	private final OrderProducer orderProducer;
+	private final OrderPublisher orderProducer;
 	private final OrderService orderService;
 
-	@PostMapping("/{id}")
+	@PostMapping("/{userId}")
 	public Order createOrder(@PathVariable Long userId) {
-		return this.orderService.createOrder(userId);
+		return this.orderService.placeOrder(userId);
 	}
 
 	@GetMapping("")
@@ -46,7 +46,7 @@ public class OrderController {
 	public ResponseEntity<String> test() {
 		/* Sending to Message Queue */
 		try {
-			orderProducer.sendMessage("Hello world");
+			orderProducer.sendMessage("", "Hello world");
 			return new ResponseEntity<>("IN_QUEUE", HttpStatus.OK);
 		} catch (Exception ex) {
 			log.error("Exception occurred while sending message to the queue. Exception= {}", ex);

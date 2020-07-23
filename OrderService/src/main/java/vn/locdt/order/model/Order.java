@@ -1,28 +1,39 @@
 package vn.locdt.order.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-@Entity
-@Table(name = "orders")
-public class Order {
+@Document(collection = "orders")
+public class Order implements Serializable {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(name = "total_amt")
-	private Double totalAmt;
-
-	@OneToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private final User user;
-
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	private String id;
+	private Long userId;
 	private List<OrderDetail> orderDetails;
+	private OrderStatus status;
+	private String remarks;
+	
+	public Order(Long userId) {
+		this.userId = userId;
+		this.orderDetails = new ArrayList<>();
+	}
+	
+	@Getter
+	public enum OrderStatus {
+		PENDING,
+		FAILED,
+		CONFIRMED,
+		DELIVERING,
+		COMPLETED;
+	}
 }

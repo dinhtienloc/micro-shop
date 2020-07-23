@@ -8,12 +8,22 @@ import lombok.Getter;
 @Configuration
 @Getter
 public class RabbitConfiguration {
-	@Value("${order.queue.name}")
-	private String queueName;
-
-	@Value("${order.exchange.name}")
-	private String exchangeName;
-
-	@Value("${order.routing.key}")
-	private String routingKey;
+	
+	@Value("${order.create.queue}")
+	private String orderCreatedQueue;
+	
+	@Value("${order.cancel.queue}")
+	private String orderCanceledQueue;
+	
+	@Value("${product.reserve.queue}")
+	private String productReserveQueue;
+	
+	@Value("${product.cancel.queue}")
+	private String productCancelQueue;
+	
+	@Value("${payment.success.queue}")
+	private String paymentSuccessQueue;
+	
+	@Value("${payment.failure.queue}")
+	private String paymentFailureQueue;
 }

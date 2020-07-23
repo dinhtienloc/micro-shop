@@ -1,5 +1,6 @@
 package vn.locdt.cart.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -7,17 +8,21 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
 @RedisHash("cart")
-public class Cart {
+public class Cart implements Serializable{
 
 	@Id
 	@Indexed
-	private final Long userId;
+	private Long userId;
 	private List<CartItem> cartItems;
-	private Double totalAmt;
+	
+	public Cart(Long userId) {
+		this.userId = userId;
+	}
 
 }

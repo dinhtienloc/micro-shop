@@ -11,7 +11,6 @@ import vn.locdt.cart.repository.CartRepository;
 import vn.locdt.cart.service.CartService;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 	private final CartRepository cartRepository;
