@@ -1,0 +1,13 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: config-service
+  cloud:
+    config:
+      server:
+        git:
+#          uri: file://${user.home}/eshop-config
+          uri: https://github.com/dinhtienloc/micro-shop-config.git
+          username: dinhtienloc
+          password: Hakiem09

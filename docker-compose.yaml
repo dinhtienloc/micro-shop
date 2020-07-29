@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE: eshop
+      MYSQL_USER: root
+      MYSQL_PASSWORD:
+    ports:
+      - "3307:3306"
+    networks:
+      - default_net
+    volumes:
+      - sqldb:/var/lib/mysql
+  rabbitmq-container:
+    build: ./rabbitmq
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    networks: 
+      - default_net
+  config-service:
+    build:  ./ConfigService
+    ports: 
+      - "9090:9090"
+    networks: 
+      - default_net
+    entrypoint: java -Dspring.profiles.active=${profile} -jar /app.jar
+  discovery-service:
+    build:  ./DiscoveryService
+    depends_on:
+      - config-service
+    ports: 
+      - "9091:9091"
+    networks: 
+      - default_net
+    entrypoint: ./wait-for-it.sh config-service:9090 -t 60 -- java -Dspring.profiles.active=docker -jar /app.jar
+  user-service:
+    build:  ./UserService
+    depends_on:
+      - config-service
+      - discovery-service
+    ports: 
+      - "8080:8080"
+    networks: 
+      - default_net
+    entrypoint: ./wait-for-it.sh config-service:9090 -t 60 -- ./wait-for-it.sh discovery-service:9091 -t 60 -- java -Dspring.profiles.active=${profile} -jar /app.jar
+    
+networks:
+  default_net:
+    driver: "bridge"
+
+volumes:
+  sqldb:
