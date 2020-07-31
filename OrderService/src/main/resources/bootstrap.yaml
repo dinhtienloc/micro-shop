@@ -1,6 +1,6 @@
 spring:
   application:
-    name: user-service
+    name: order-service
   cloud:
     config:
       uri: http://localhost:9090
@@ -13,8 +13,8 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:9091/eureka
 server:
-  port: 8081
-  
+  port: 8083
+
 ---
 spring:
   profiles: docker

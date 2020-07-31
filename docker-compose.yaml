@@ -23,10 +23,29 @@ services:
       - "15673:15672"
     networks: 
       - default_net
+  mongo-container:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: eshop
+    ports:
+      - "27018:27017"
+    networks: 
+      - default_net
+  redis-container:
+    image: redis:6-alpine
+    ports:
+      - "6380:6379"
+    networks: 
+      - default_net
+    volumes:
+      - redis-data:/data
   config-service:
     build:  ./ConfigService
-    ports: 
-      - "9090:9090"
+    # ports: 
+    # - "9090:9090"
+    expose:
+      - "9090"
     networks: 
       - default_net
     entrypoint: java -Dspring.profiles.active=${profile} -jar /app.jar
@@ -34,18 +53,75 @@ services:
     build:  ./DiscoveryService
     depends_on:
       - config-service
-    ports: 
-      - "9091:9091"
+    # ports: 
+    #   - "9091:9091"
+    expose:
+      - "9090"
     networks: 
       - default_net
     entrypoint: ./wait-for-it.sh config-service:9090 -t 60 -- java -Dspring.profiles.active=docker -jar /app.jar
-  user-service:
-    build:  ./UserService
+  gateway-service:
+    build:  ./GatewayService
     depends_on:
       - config-service
       - discovery-service
     ports: 
       - "8080:8080"
+    networks: 
+      - default_net
+    entrypoint: ./wait-for-it.sh config-service:9090 -t 60 -- ./wait-for-it.sh discovery-service:9091 -t 60 -- java -Dspring.profiles.active=${profile} -jar /app.jar
+  user-service:
+    build:  ./UserService
+    depends_on:
+      - mysql
+      - config-service
+      - discovery-service
+    # ports: 
+    #   - "8081:8081"
+    expose:
+      - "8081"
+    networks: 
+      - default_net
+    entrypoint: ./wait-for-it.sh config-service:9090 -t 60 -- ./wait-for-it.sh discovery-service:9091 -t 60 -- java -Dspring.profiles.active=${profile} -jar /app.jar
+  product-service:
+    build:  ./ProductService
+    depends_on:
+      - mysql
+      - rabbitmq-container
+      - config-service
+      - discovery-service
+    # ports: 
+    #  - "8082:8082"
+    expose:
+      - "8082"
+    networks: 
+      - default_net
+    entrypoint: ./wait-for-it.sh config-service:9090 -t 60 -- ./wait-for-it.sh discovery-service:9091 -t 60 -- java -Dspring.profiles.active=${profile} -jar /app.jar
+  order-service:
+    build:  ./OrderService
+    depends_on:
+      - rabbitmq-container
+      - mongo-container
+      - redis-container
+      - config-service
+      - discovery-service
+    # ports: 
+    #  - "8083:8083"
+    expose:
+      - "8083"
+    networks: 
+      - default_net
+    entrypoint: ./wait-for-it.sh config-service:9090 -t 60 -- ./wait-for-it.sh discovery-service:9091 -t 60 -- java -Dspring.profiles.active=${profile} -jar /app.jar
+  cart-service:
+    build:  ./CartService
+    depends_on:
+      - redis-container
+      - config-service
+      - discovery-service
+    # ports: 
+    #   - "8084:8084"
+    expose:
+      - "8084"
     networks: 
       - default_net
     entrypoint: ./wait-for-it.sh config-service:9090 -t 60 -- ./wait-for-it.sh discovery-service:9091 -t 60 -- java -Dspring.profiles.active=${profile} -jar /app.jar
@@ -56,3 +132,4 @@ networks:
 
 volumes:
   sqldb:
+  redis-data:

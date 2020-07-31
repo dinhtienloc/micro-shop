@@ -1,5 +1,6 @@
 server:
   port: 9090
+  
 spring:
   application:
     name: config-service
@@ -7,7 +8,15 @@ spring:
     config:
       server:
         git:
-#          uri: file://${user.home}/eshop-config
+          uri: file://${user.home}/eshop-config
+          
+---
+spring:
+  profiles: docker
+  cloud:
+    config:
+      server:
+        git:
           uri: https://github.com/dinhtienloc/micro-shop-config.git
           username: dinhtienloc
           password: Hakiem09
