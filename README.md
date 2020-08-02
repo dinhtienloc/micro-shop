@@ -204,11 +204,12 @@ $ mvn spring-boot:run
 ```
 
 - Repeat this for all other services that you want to run. Please ensure that ConfigService, DiscoveryService, GatewayConfig must be started with the correct order before run the others.
+- All services are run with `default` profile.
 
 ### Via docker
-
+We will run with `docker` profile since docker enviroment is different from local enviroment.
 ```bash
 $ cd eshop
 $ mvn clean install
-$ docker-compose up --build -d
+$ docker-compose profile=docker up --build -d
 ```
