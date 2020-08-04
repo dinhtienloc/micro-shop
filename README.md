@@ -12,6 +12,7 @@ Very simple shop application (backend only) for getting started with microservic
   * [Order Service](#order-service)
 * [Architecture and Patterns](#architecture-and-patterns)
   * [Config Server](#config-server)
+  * [Authentication](#authentication)
   * [API Gateway](#api-gateway)
   * [Service Discovery](#service-discovery)
   * [REST](#rest)
@@ -24,9 +25,9 @@ Very simple shop application (backend only) for getting started with microservic
 
 A web application with minimalist feature for customer to buy products:
 
-- User registration
+- User registration with authentication (TODO)
 - All registered users can search and buy products and see all orders they have done
-- Fully product managements (CRUD)
+- product CRUD managements
 - Provide a Shopping Cart that can keep user selections even they go offline
 - No online payment is supported yet. Customer is required to pay by their balance when check-out an order
 
@@ -126,6 +127,10 @@ In this case, a document-based database such as MongoDB is appropriate. Because 
 ### Config Server
 
 Following [12-factor app](https://12factor.net/config), configuration should be separated from code, and should be store in environment variables. In this example, I used [Spring Cloud Config](https://spring.io/projects/spring-cloud-config), which provides server and client-side support for externalized configuration in a distributed system. We can have a central place to manage external properties for applications across all environments and be easily switch between deployment stages.
+
+### Authentication
+
+// TODO
 
 ###  API Gateway
 
