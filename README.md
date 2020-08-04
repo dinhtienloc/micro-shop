@@ -138,7 +138,7 @@ Service Discovery is a pattern which allow a client can determine the location o
 1. **[Service Registry](https://microservices.io/patterns/service-registry.html)**: It is a database of services, their instances and their locations. A service registry needs to be highly available and always up to date. Service instances are registered with the service registry on startup and deregistered on shutdown. Client will query the service registry to find the available instances of a service. A service registry might invoke a service instance’s health check API to verify that it is able to handle requests.
 
 2. **[Client-side service discovery](https://microservices.io/patterns/client-side-discovery.html)**: The client talks directly to the service registry and gets the complete address (host and port) of all instances of service to be called. The client then uses a load balancing algorithm to select one of the available service instances and makes a request. So, in the end, the client knows the host and port of service and the client is the one who makes a final request to targeted service.
-   ![Client-side discovery](rsz_1client-side-pattern.png)
+   ![Client-side discovery](client-side-pattern.png)
 
 Pros:
 
@@ -151,7 +151,7 @@ Cons:
 * Client-side service discovery logic has to be implemented for each programming language/frameworks used by the service clients
 
 3. **[Server-side service discovery](https://microservices.io/patterns/server-side-discovery.html)**: The client talks to a Load Balancer (or router). Router internally discovers the address of service via Service registry and then make a call further to target service. 
-   ![Server-side discovery](rsz_1server-side-pattern.png)
+   ![Server-side discovery](server-side-pattern.png)
 
 Pros:
 
